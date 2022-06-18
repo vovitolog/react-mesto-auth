@@ -61,3 +61,9 @@
 @import url('./blocks/popup/__image/popup__image.css');
 @import url('./blocks/popup/__wrapper/popup__wrapper.css');
 @import url('./blocks/popup/__description/popup__description.css');
+
+@import url('./blocks/login/login.css');
+@import url('./blocks/login/__title/login__title.css');
+@import url('./blocks/login/__button/login__button.css');
+@import url('./blocks/login/__input/login__input.css');
+@import url('./blocks/login/__link/login__link.css');
