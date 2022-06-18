@@ -8,6 +8,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import api from "../utils/Api";
+import {Switch, Route} from "react-router-dom";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
@@ -131,6 +132,8 @@ function App() {
       <div className="container">
         <div className="page">
           <Header />
+          <Switch>
+          <Route exact path={"/"}>
           <Main
             onEditAvatar={handleEditAvatarClick}
             onEditProfile={handleEditProfileClick}
@@ -140,6 +143,12 @@ function App() {
             onCardLike={handleCardLike}
             onCardDelete={handleCardDelete}
           />
+         </Route>
+         <Route path="/sign-in">         
+          </Route>
+          <Route path="/sign-up">   
+          </Route>
+         </Switch>
           <Footer />
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
