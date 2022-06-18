@@ -1,0 +1,19 @@
+.profile__photo-wrapper {
+  position: relative;
+}
+
+@media screen and (max-width: 700px) {
+  .profile__photo-wrapper {
+    margin-bottom: 26px;
+  }
+}
+
+.profile__photo-wrapper:hover {
+  transition: opacity 0.3s ease-out;
+  opacity: 0.3;
+  cursor: pointer;
+}
+
+.profile__photo-wrapper:hover .profile__photo-edit {
+  display: block;
+}
