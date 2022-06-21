@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 
-function Login() {
+function Login({ onLogin }) {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setData({
+      ...data, // надо ли деструктуризироваьь????????????
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const { email, password } = data;
+    if (!email || !password) {
+      return;
+    }
+
+    console.log({ email, password });
+    onLogin({ email, password });
+  };
+
   return (
-    <form className="login">
+    <form onSubmit={handleSubmit} className="login">
       <h1 className="login__title">Вход</h1>
       <input
         minLength="2"
@@ -12,9 +36,8 @@ function Login() {
         name="email"
         id="email-input"
         placeholder="Email"
-        /* onChange={(event) => setProfession(event.target.value)}
-        value={} */
-        required
+        value={data.email}
+        onChange={handleChange}
       />
 
       <input
@@ -25,9 +48,8 @@ function Login() {
         name="password"
         id="password-input"
         placeholder="Пароль"
-        /* onChange={(event) => setProfession(event.target.value)}
-        value={} */
-        required
+        value={data.password} 
+        onChange={handleChange}
       />
       <button className="login__button" type="submit">
         Войти
