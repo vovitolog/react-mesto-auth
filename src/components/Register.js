@@ -17,6 +17,11 @@ function Register({ onRegister }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const { email, password } = data;
+
+    if (!email || !password) {
+      return;
+    }
+
     console.log({ email, password });
     onRegister({ email, password });
   };
@@ -32,8 +37,7 @@ function Register({ onRegister }) {
         name="email"
         id="email-input"
         placeholder="Email"
-        /* onChange={(event) => setProfession(event.target.value)}
-        value={} */
+        value={data.email}
         onChange={handleChange}
       />
 
@@ -45,8 +49,7 @@ function Register({ onRegister }) {
         name="password"
         id="password-input"
         placeholder="Пароль"
-        /* onChange={(event) => setProfession(event.target.value)}
-        value={} */
+        value={data.password}
         onChange={handleChange}
       />
       <button className="login__button" type="submit">
