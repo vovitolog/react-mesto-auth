@@ -11,7 +11,7 @@ import api from "../utils/Api";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
-import * as auth from '../auth.js';
+import * as auth from "../auth.js";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -24,7 +24,11 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedin] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
   const history = useHistory();
 
   useEffect(() => {
@@ -131,25 +135,45 @@ function App() {
       });
   }
 
-  function handleLogin({email, password}) {
+  function handleLogin({ email, password }) {
+    auth
+      .authorize( email, password )
+      .then((data) => {
+        if (!data) {
+          return setError("Такого пользователя не существует.");
+        }
 
+        const {jwt} = data;
+        if (jwt) {          
+          const {email, password} = data;
+          localStorage.setItem("jwt", jwt);
+          setUserData({
+            email,
+            password,
+          });
+      
+          setLoggedin (true);
+          history.push("/");
+        }
+      })
+      .catch((setError) => setError("Что-то пошло не так!")); // поменять????;
   }
 
-  function handleRegister({email, password}) {
-    auth.register (email, password).then((res) => {
-      if (res.status === 400) {
-        setError('Что-то пошло не так!')
-      } else {
-        setError('');
-        history.push('/sign-in');
-      }
-    })
-    .catch(setError => setError('Что-то пошло не так!'));
+  function handleRegister({ email, password }) {
+    auth
+      .register(email, password)
+      .then((res) => {
+        if (res.status === 400) {
+          setError("Что-то пошло не так!");
+        } else {
+          setError("");
+          history.push("/sign-in");
+        }
+      })
+      .catch((setError) => setError("Что-то пошло не так!")); // поменять????
   }
 
-  function tockenCheck() {
-
-  }
+  function tockenCheck() {}
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -169,10 +193,10 @@ function App() {
               />
             </Route>
             <Route path="/sign-in">
-              <Login onLogin={handleLogin} tockenCheck={tockenCheck}/>
+              <Login onLogin={handleLogin} tockenCheck={tockenCheck} />
             </Route>
             <Route path="/sign-up">
-              <Register onRegister={handleRegister}/>
+              <Register onRegister={handleRegister} />
             </Route>
           </Switch>
           <Footer />
