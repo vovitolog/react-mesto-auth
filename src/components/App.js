@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -8,24 +8,26 @@ import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import api from "../utils/Api";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
+import * as auth from '../auth.js';
 
 function App() {
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-    React.useState(false);
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
-    React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState({
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState({
     name: "",
     link: "",
   });
-  const [currentUser, setCurrentUser] = React.useState({});
-  const [cards, setCards] = React.useState([]);
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedin] = useState(false);
+  const [error, setError] = useState('');
+  const history = useHistory();
 
-  React.useEffect(() => {
+  useEffect(() => {
     api
       .getUserInfo()
       .then((data) => {
@@ -36,7 +38,7 @@ function App() {
       });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     api
       .getInitialCards()
       .then((data) => {
@@ -129,6 +131,26 @@ function App() {
       });
   }
 
+  function handleLogin({email, password}) {
+
+  }
+
+  function handleRegister({email, password}) {
+    auth.register (email, password).then((res) => {
+      if (res.status === 400) {
+        setError('Что-то пошло не так!')
+      } else {
+        setError('');
+        history.push('/sign-in');
+      }
+    })
+    .catch(setError => setError('Что-то пошло не так!'));
+  }
+
+  function tockenCheck() {
+
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="container">
@@ -147,10 +169,10 @@ function App() {
               />
             </Route>
             <Route path="/sign-in">
-              <Login />
+              <Login onLogin={handleLogin} tockenCheck={tockenCheck}/>
             </Route>
             <Route path="/sign-up">
-              <Register />
+              <Register onRegister={handleRegister}/>
             </Route>
           </Switch>
           <Footer />
