@@ -29,7 +29,17 @@ function App() {
     email: "",
     password: "",
   });
-  const history = useHistory();
+  const history = useHistory(); 
+
+  useEffect(() => {
+    tockenCheck()
+  }, [])
+
+  useEffect(()=> {
+    if(loggedIn){
+      history.push("/")
+    }
+  }, [loggedIn])
 
   useEffect(() => {
     api
@@ -52,6 +62,8 @@ function App() {
         console.log(error);
       });
   }, []);
+
+
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -137,43 +149,60 @@ function App() {
 
   function handleLogin({ email, password }) {
     auth
-      .authorize( email, password )
-      .then((data) => {
+      .authorize(email, password)
+      
+    /*   .then((data) => {
+        console.log(data)
         if (!data) {
           return setError("Такого пользователя не существует.");
         }
 
-        const {jwt} = data;
-        if (jwt) {          
-          const {email, password} = data;
+        const { jwt } = data;
+        if (jwt) {
+          const { email, password } = data;
           localStorage.setItem("jwt", jwt);
           setUserData({
             email,
             password,
           });
-      
-          setLoggedin (true);
+
+          setLoggedin(true);
           history.push("/");
         }
       })
-      .catch((setError) => setError("Что-то пошло не так!")); // поменять????;
+      .catch(err => console.log(err)); */
   }
 
   function handleRegister({ email, password }) {
     auth
       .register(email, password)
-      .then((res) => {
-        if (res.status === 400) {
-          setError("Что-то пошло не так!");
+      .then((response) => {
+        if (response.status === 400) {
+          console.log("Что-то пошло не так!");
         } else {
-          setError("");
+          console.log("Всё хорошо!");
           history.push("/sign-in");
         }
       })
-      .catch((setError) => setError("Что-то пошло не так!")); // поменять????
+      .catch(err => console.log(err));
   }
 
-  function tockenCheck() {}
+  function tockenCheck() {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      auth
+        .getContent(jwt)
+        .then((response) => {
+          if (response) {
+            const { email, password } = response;
+            setUserData({ email, password });
+            setLoggedin(true);
+           // history.push("/");
+          }
+        })
+        .catch(err => console.log(err));
+    }
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
