@@ -11,6 +11,8 @@ import api from "../utils/Api";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
+import ProtectedRoute from './ProtectedRoute';
+import InfoTooltip from "./Infotooltip";
 import * as auth from "../auth.js";
 
 function App() {
