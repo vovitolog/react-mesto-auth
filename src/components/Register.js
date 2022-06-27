@@ -22,7 +22,7 @@ function Register({ onRegister }) {
       return;
     }
 
-    console.log({ email, password });
+    console.log({ email, password }); // delete
     onRegister({ email, password });
   };
 

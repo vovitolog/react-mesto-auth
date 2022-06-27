@@ -1,0 +1,12 @@
+.header__button {
+  text-decoration: none;
+  color: #ffffff;
+  background-color: transparent;
+  padding: 0;
+  border: none;
+}
+
+.header__button:hover{
+    transition: opacity 0.3s ease-out;
+    opacity: 0.6;
+  }

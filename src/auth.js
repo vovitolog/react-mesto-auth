@@ -33,7 +33,7 @@ export const authorize = (email, password) => {
       } else return response.json();
     })
     .then((data) => {
-      console.log(data);
+      console.log(data); // Delete
       if (data.token) {
         localStorage.setItem("jwt", data.token);
         return data.token;

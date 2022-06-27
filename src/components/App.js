@@ -11,7 +11,7 @@ import api from "../utils/Api";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
-import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute from "./ProtectedRoute";
 import InfoTooltip from "./Infotooltip";
 import * as auth from "../auth.js";
 
@@ -28,22 +28,23 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedin] = useState(false);
-  const [error, setError] = useState("");  // delete?
-  const [userData, setUserData] = useState({ // where?
+  const [error, setError] = useState(""); // delete?
+  const [userData, setUserData] = useState({
+    // where?
     email: "",
     password: "",
   });
-  const history = useHistory(); 
+  const history = useHistory();
 
   useEffect(() => {
-    tockenCheck()
-  }, [])
+    tockenCheck();
+  }, []);
 
-  useEffect(()=> {
-    if(loggedIn){
-      history.push("/")
+  useEffect(() => {
+    if (loggedIn) {
+      history.push("/");
     }
-  }, [loggedIn])
+  }, [loggedIn]);
 
   useEffect(() => {
     api
@@ -67,8 +68,6 @@ function App() {
       });
   }, []);
 
-
-
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -79,7 +78,7 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function  handleInfoTooltipPopupOpen() {
+  function handleInfoTooltipPopupOpen() {
     setIsInfoTooltipPopupOpen(true);
   }
 
@@ -158,9 +157,8 @@ function App() {
   }
 
   function handleLogin({ email, password }) {
-    auth
-      .authorize(email, password)
-      
+    auth.authorize(email, password);
+
     /*   .then((data) => {
         console.log(data)
         if (!data) {
@@ -194,15 +192,16 @@ function App() {
           history.push("/sign-in");
         }
       })
-      .catch(err => console.log(err))
+      .catch((err) => console.log(err))
       .finally(() => {
-        handleInfoTooltipPopupOpen()
-      })
+        handleInfoTooltipPopupOpen();
+      });
   }
 
   function tockenCheck() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
+      console.log('Токен Есть!')
       auth
         .getContent(jwt)
         .then((response) => {
@@ -210,18 +209,28 @@ function App() {
             const { email, password } = response;
             setUserData({ email, password });
             setLoggedin(true);
-           // history.push("/");
+            // history.push("/");
           }
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     }
   }
 
+  function handleLogout() {
+    localStorage.removeItem('jwt');
+    setLoggedin(false);
+    history.push('/sign-in');
+}
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
+     {/*  {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />} */}
       <div className="container">
         <div className="page">
-          <Header />
+          <Header 
+          onClick={handleLogout}
+          headerButtonText={"Выйти"}
+          />
           <Switch>
             <Route exact path={"/"}>
               <Main
@@ -261,8 +270,8 @@ function App() {
           />
 
           <InfoTooltip
-          isOpen={isInfoTooltipPopupOpen} 
-           onClose={closeAllPopups}
+            isOpen={isInfoTooltipPopupOpen}
+            onClose={closeAllPopups}
           />
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
