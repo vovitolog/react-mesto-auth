@@ -19,6 +19,8 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
+
   const [selectedCard, setSelectedCard] = useState({
     name: "",
     link: "",
@@ -26,8 +28,8 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedin] = useState(false);
-  const [error, setError] = useState("");
-  const [userData, setUserData] = useState({
+  const [error, setError] = useState("");  // delete?
+  const [userData, setUserData] = useState({ // where?
     email: "",
     password: "",
   });
@@ -76,6 +78,11 @@ function App() {
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
   }
+
+  function  handleInfoTooltipPopupOpen() {
+    setIsInfoTooltipPopupOpen(true);
+  }
+
   function handleCardClick(card) {
     setSelectedCard(card);
   }
@@ -84,6 +91,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsInfoTooltipPopupOpen(false);
     setSelectedCard({ name: "", link: "" });
   }
 
@@ -186,7 +194,10 @@ function App() {
           history.push("/sign-in");
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .finally(() => {
+        handleInfoTooltipPopupOpen()
+      })
   }
 
   function tockenCheck() {
@@ -247,6 +258,11 @@ function App() {
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
+          />
+
+          <InfoTooltip
+          isOpen={isInfoTooltipPopupOpen} 
+           onClose={closeAllPopups}
           />
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
