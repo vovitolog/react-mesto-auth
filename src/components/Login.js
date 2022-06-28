@@ -1,6 +1,9 @@
+import Header from "./Header";
+import { useHistory } from "react-router-dom";
 import React, { useState } from "react";
 
 function Login({ onLogin }) {
+  const history = useHistory();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -9,7 +12,7 @@ function Login({ onLogin }) {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setData({
-      ...data, // надо ли деструктуризироваьь????????????
+      ...data, 
       [name]: value,
     });
   };
@@ -24,37 +27,48 @@ function Login({ onLogin }) {
     console.log({ email, password });
     onLogin({ email, password });
   };
-
+ 
   return (
-    <form onSubmit={handleSubmit} className="login">
-      <h1 className="login__title">Вход</h1>
-      <input
-        minLength="2"
-        maxLength="200"
-        type="email"
-        className="login__input"
-        name="email"
-        id="email-input"
-        placeholder="Email"
-        value={data.email}
-        onChange={handleChange}
-      />
+    <div className="container">
+      <div className="page">
+        <Header
+          headerButtonText="Регистрация"
+          onClick={() => history.push("/sign-up")}
+        />
 
-      <input
-        minLength="2"
-        maxLength="200"
-        type="password"
-        className="login__input"
-        name="password"
-        id="password-input"
-        placeholder="Пароль"
-        value={data.password} 
-        onChange={handleChange}
-      />
-      <button className="login__button" type="submit">
-        Войти
-      </button>
-    </form>
+        <form onSubmit={handleSubmit} className="login">
+          <h1 className="login__title">Вход</h1>
+          <input
+            minLength="2"
+            maxLength="200"
+            type="email"
+            className="login__input"
+            name="email"
+            id="email-input"
+            placeholder="Email"
+            value={data.email}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            minLength="2"
+            maxLength="200"
+            type="password"
+            className="login__input"
+            name="password"
+            id="password-input"
+            placeholder="Пароль"
+            value={data.password}
+            onChange={handleChange}
+            required
+          />
+          <button className="login__button" type="submit">
+            Войти
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 

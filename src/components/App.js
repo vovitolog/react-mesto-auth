@@ -28,23 +28,41 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedin] = useState(false);
-  const [error, setError] = useState(""); // delete?
-  const [userData, setUserData] = useState({
-    // where?
-    email: "",
-    password: "",
+  const [userEmail, setUserEmail] = useState({
+    email: "", 
   });
   const history = useHistory();
 
   useEffect(() => {
-    tockenCheck();
-  }, []);
-
-  useEffect(() => {
     if (loggedIn) {
+      console.log("loggedIn");
       history.push("/");
+    } else {
+      localStorage.removeItem("jwt");
+      history.push("/sign-in"); // Убрать
     }
   }, [loggedIn]);
+
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    //console.log(jwt)
+    if (jwt) {
+      console.log(jwt);
+      auth
+        .getContent(jwt)
+        .then((response) => {
+          if (response) {
+            console.log(response.data.email);
+            setLoggedin(true);
+            setUserEmail(response.data.email);
+            history.push("/");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+
+    //tockenCheck();
+  }, []);
 
   useEffect(() => {
     api
@@ -155,30 +173,31 @@ function App() {
         console.log(error);
       });
   }
-
   function handleLogin({ email, password }) {
-    auth.authorize(email, password);
-
-    /*   .then((data) => {
-        console.log(data)
+    auth
+      .authorize(email, password)
+      .then((data) => {
+        /* console.log(data);
         if (!data) {
-          return setError("Такого пользователя не существует.");
-        }
+          throw new Error("Произошла ошибка");
+        } */
 
-        const { jwt } = data;
+        setLoggedin(true);
+        history.push("/");
+
+        console.log(loggedIn);
+        /* 
+        const jwt  = data;
+        console.log(jwt)
         if (jwt) {
-          const { email, password } = data;
+          const { email } = data;
           localStorage.setItem("jwt", jwt);
-          setUserData({
-            email,
-            password,
-          });
-
-          setLoggedin(true);
-          history.push("/");
-        }
+          setUserEmail({
+            email,          
+          });         
+        } */
       })
-      .catch(err => console.log(err)); */
+      .catch((error) => console.log(error));
   }
 
   function handleRegister({ email, password }) {
@@ -198,59 +217,68 @@ function App() {
       });
   }
 
-  function tockenCheck() {
+  /*   function tockenCheck() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      console.log('Токен Есть!')
       auth
         .getContent(jwt)
         .then((response) => {
           if (response) {
-            const { email, password } = response;
-            setUserData({ email, password });
+            console.log(response.data.email);
+            setUserEmail(response.data.email);
             setLoggedin(true);
-            // history.push("/");
           }
         })
         .catch((err) => console.log(err));
     }
   }
-
+ */
   function handleLogout() {
-    localStorage.removeItem('jwt');
+    localStorage.removeItem("jwt");
+    setUserEmail("");
     setLoggedin(false);
-    history.push('/sign-in');
-}
+    history.push("/sign-in");
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-     {/*  {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />} */}
+      {/* {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />} */}
+
       <div className="container">
         <div className="page">
-          <Header 
-          onClick={handleLogout}
-          headerButtonText={"Выйти"}
+          <Header
+            onClick={handleLogout}
+            
+            headerButtonText={"Выйти"}
           />
-          <Switch>
-            <Route exact path={"/"}>
-              <Main
-                onEditAvatar={handleEditAvatarClick}
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onCardClick={handleCardClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handleCardDelete}
-              />
-            </Route>
-            <Route path="/sign-in">
-              <Login onLogin={handleLogin} tockenCheck={tockenCheck} />
-            </Route>
-            <Route path="/sign-up">
-              <Register onRegister={handleRegister} />
-            </Route>
-          </Switch>
+
+          <ProtectedRoute
+            path="/"
+            loggedIn={loggedIn}
+            component={Main}
+            onEditAvatar={handleEditAvatarClick}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+          />
+          
+          <Route path="/sign-in">
+            <Login onLogin={handleLogin} />
+          </Route>
+
+          <Route path="/sign-up">
+            <Register onRegister={handleRegister} />
+          </Route>
+
+          <Route path="/">
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+          </Route>
+
           <Footer />
+
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
             onClose={closeAllPopups}

@@ -1,16 +1,19 @@
 import React from "react";
-import logo from '../images/logo.svg';
+import logo from "../images/logo.svg";
 
-function Header({onClick, headerButtonText}) {
+function Header({ onClick, headerButtonText }) {
   return (
-    
     <header className="header">
       <div className="header__container">
-      <img className="header__logo" alt="Место" src={logo} />
-      <button className="header__button" onClick={onClick}>{headerButtonText}</button>
+        <img className="header__logo" alt="Место" src={logo} />
+        <div className="header__auth-wrapper">
+          <p className="header__email-text">ttttttttttttttttt</p>
+          <button className="header__button" onClick={onClick}>
+            {headerButtonText}
+          </button>
+        </div>
       </div>
     </header>
-    
   );
 }
 
