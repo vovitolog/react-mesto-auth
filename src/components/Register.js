@@ -27,6 +27,8 @@ function Register({ onRegister }) {
   };
 
   return (
+
+<>
     <form onSubmit={handleSubmit} className="login">
       <h1 className="login__title">Регистрация</h1>
       <input
@@ -56,6 +58,8 @@ function Register({ onRegister }) {
         Зарегистрироваться
       </button>
     </form>
+    </>
+
   );
 }
 

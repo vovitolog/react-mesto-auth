@@ -29,7 +29,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedin] = useState(false);
   const [userEmail, setUserEmail] = useState({
-    email: "", 
+    email: "",
   });
   const history = useHistory();
 
@@ -41,7 +41,7 @@ function App() {
       localStorage.removeItem("jwt");
       history.push("/sign-in"); // Убрать
     }
-  }, [loggedIn]);
+  }, [loggedIn, history]);
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
@@ -242,40 +242,33 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      {/* {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />} */}
-
+      
       <div className="container">
         <div className="page">
-          <Header
-            onClick={handleLogout}
-            
-            headerButtonText={"Выйти"}
-          />
+          <Header onClick={handleLogout} headerButtonText={"Выйти"} />
+          <Switch>
 
-          <ProtectedRoute
-            path="/"
-            loggedIn={loggedIn}
-            component={Main}
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onCardClick={handleCardClick}
-            cards={cards}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
-          />
-          
-          <Route path="/sign-in">
-            <Login onLogin={handleLogin} />
-          </Route>
+            <Route path="/sign-in">
+              <Login onLogin={handleLogin} />
+            </Route>
 
-          <Route path="/sign-up">
-            <Register onRegister={handleRegister} />
-          </Route>
+            <Route path="/sign-up">
+              <Register onRegister={handleRegister} />
+            </Route>
 
-          <Route path="/">
-            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-          </Route>
+            <ProtectedRoute
+              path="/"
+              component={Main}
+              loggedIn={loggedIn}
+              onEditAvatar={handleEditAvatarClick}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
+          </Switch>
 
           <Footer />
 

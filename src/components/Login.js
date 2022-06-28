@@ -1,4 +1,3 @@
-import Header from "./Header";
 import { useHistory } from "react-router-dom";
 import React, { useState } from "react";
 
@@ -29,13 +28,7 @@ function Login({ onLogin }) {
   };
  
   return (
-    <div className="container">
-      <div className="page">
-        <Header
-          headerButtonText="Регистрация"
-          onClick={() => history.push("/sign-up")}
-        />
-
+  
         <form onSubmit={handleSubmit} className="login">
           <h1 className="login__title">Вход</h1>
           <input
@@ -67,8 +60,7 @@ function Login({ onLogin }) {
             Войти
           </button>
         </form>
-      </div>
-    </div>
+   
   );
 }
 
