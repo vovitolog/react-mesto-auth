@@ -28,9 +28,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedin] = useState(false);
-  const [userEmail, setUserEmail] = useState({
-    email: "",
-  });
+  const [userEmail, setUserEmail] = useState("");
   const history = useHistory();
 
   useEffect(() => {
@@ -60,7 +58,6 @@ function App() {
         })
         .catch((err) => console.log(err));
     }
-
   }, []);
 
   useEffect(() => {
@@ -180,7 +177,8 @@ function App() {
         if (!data) {
           throw new Error("Произошла ошибка");
         } */
-
+        console.log(data);
+        console.log("вошел!!!!!!!!!!!!!!");
         setLoggedin(true);
         history.push("/");
 
@@ -241,12 +239,15 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      
       <div className="container">
         <div className="page">
-          <Header onClick={handleLogout} headerButtonText={"Выйти"} />
+          <Header
+            onClick={handleLogout}
+            headerButtonText={"Выйти"}
+            userEmail={userEmail}
+            loggedIn={loggedIn}
+          />
           <Switch>
-
             <Route path="/sign-in">
               <Login onLogin={handleLogin} />
             </Route>
