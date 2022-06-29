@@ -29,34 +29,28 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedin] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [registrationStatus, setRegistrationStatus] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
-    if (loggedIn) {
-      console.log("loggedIn");
+    if (loggedIn) {      
       history.push("/");
-    } /* else {
-      localStorage.removeItem("jwt");
-      history.push("/sign-in"); // Убрать
-    } */
+    } 
   }, [loggedIn]);
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
-    //console.log(jwt)
     if (jwt) {
-      console.log(jwt);
       auth
         .getContent(jwt)
-        .then((response) => {
-          if (response) {
-            console.log(response.data.email);
+        .then((response) => {          
+          if (response) {           
             setLoggedin(true);
             setUserEmail(response.data.email);
             history.push("/");
           }
         })
-        .catch((err) => console.log(err));
+        .catch((error) => console.log(error));
     }
   }, []);
 
@@ -179,10 +173,10 @@ function App() {
         } */
         console.log(data);
         console.log("вошел!!!!!!!!!!!!!!");
-        setLoggedin(true);
+        setLoggedin(true);        
         history.push("/");
 
-        console.log(loggedIn);
+        //console.log(loggedIn);
         /* 
         const jwt  = data;
         console.log(jwt)
@@ -201,17 +195,14 @@ function App() {
     auth
       .register(email, password)
       .then((response) => {
-        if (response.status === 400) {
-          console.log("Что-то пошло не так!");
-        } else {
-          console.log("Всё хорошо!");
-          history.push("/sign-in");
-        }
+        console.log(response)
+        if (response) {
+        setRegistrationStatus(true);       
+        history.push("/sign-in");
+      }
       })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        handleInfoTooltipPopupOpen();
-      });
+      .catch(() => {setRegistrationStatus(false)})    
+      .finally(() => {handleInfoTooltipPopupOpen()});     
   }
 
   /*   function tockenCheck() {
@@ -242,8 +233,7 @@ function App() {
       <div className="container">
         <div className="page">
           <Header
-            onClick={handleLogout}
-            headerButtonText={"Выйти"}
+            onClick={handleLogout}            
             userEmail={userEmail}
             loggedIn={loggedIn}
           />
@@ -293,6 +283,7 @@ function App() {
           <InfoTooltip
             isOpen={isInfoTooltipPopupOpen}
             onClose={closeAllPopups}
+            registrationStatus={registrationStatus}
           />
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
