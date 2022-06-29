@@ -37,11 +37,11 @@ function App() {
     if (loggedIn) {
       console.log("loggedIn");
       history.push("/");
-    } else {
+    } /* else {
       localStorage.removeItem("jwt");
       history.push("/sign-in"); // Убрать
-    }
-  }, [loggedIn, history]);
+    } */
+  }, [loggedIn]);
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
@@ -61,7 +61,6 @@ function App() {
         .catch((err) => console.log(err));
     }
 
-    //tockenCheck();
   }, []);
 
   useEffect(() => {
