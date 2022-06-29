@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../images/logo.svg";
 
-function Header({ onClick, headerButtonText, userEmail, loggedIn }) {
+function Header({ onClick, userEmail, loggedIn }) {
   const location = useLocation();
 
   return (
@@ -25,7 +25,7 @@ function Header({ onClick, headerButtonText, userEmail, loggedIn }) {
             <>
               <p className="header__email-text">{userEmail}</p>
               <button className="header__button" onClick={onClick}>
-                {headerButtonText}
+                Выйти
               </button>
             </>
           )}
