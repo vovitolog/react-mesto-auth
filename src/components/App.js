@@ -8,7 +8,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import api from "../utils/Api";
-import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
@@ -33,9 +33,9 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
-    if (loggedIn) {      
+    if (loggedIn) {
       history.push("/");
-    } 
+    }
   }, [loggedIn]);
 
   useEffect(() => {
@@ -43,8 +43,8 @@ function App() {
     if (jwt) {
       auth
         .getContent(jwt)
-        .then((response) => {          
-          if (response) {           
+        .then((response) => {
+          if (response) {
             setLoggedin(true);
             setUserEmail(response.data.email);
             history.push("/");
@@ -166,27 +166,13 @@ function App() {
   function handleLogin({ email, password }) {
     auth
       .authorize(email, password)
-      .then((data) => {
-        /* console.log(data);
-        if (!data) {
-          throw new Error("Произошла ошибка");
-        } */
-        console.log(data);
-        console.log("вошел!!!!!!!!!!!!!!");
-        setLoggedin(true);        
-        history.push("/");
-
-        //console.log(loggedIn);
-        /* 
-        const jwt  = data;
-        console.log(jwt)
-        if (jwt) {
-          const { email } = data;
-          localStorage.setItem("jwt", jwt);
-          setUserEmail({
-            email,          
-          });         
-        } */
+      .then((data) => {       
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setLoggedin(true);
+          setUserEmail(email);
+          history.push("/");
+        }       
       })
       .catch((error) => console.log(error));
   }
@@ -195,32 +181,19 @@ function App() {
     auth
       .register(email, password)
       .then((response) => {
-        console.log(response)
         if (response) {
-        setRegistrationStatus(true);       
-        history.push("/sign-in");
-      }
+          setRegistrationStatus(true);
+          history.push("/sign-in");
+        }
       })
-      .catch(() => {setRegistrationStatus(false)})    
-      .finally(() => {handleInfoTooltipPopupOpen()});     
+      .catch(() => {
+        setRegistrationStatus(false);
+      })
+      .finally(() => {
+        handleInfoTooltipPopupOpen();
+      });
   }
 
-  /*   function tockenCheck() {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      auth
-        .getContent(jwt)
-        .then((response) => {
-          if (response) {
-            console.log(response.data.email);
-            setUserEmail(response.data.email);
-            setLoggedin(true);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  }
- */
   function handleLogout() {
     localStorage.removeItem("jwt");
     setUserEmail("");
@@ -233,7 +206,7 @@ function App() {
       <div className="container">
         <div className="page">
           <Header
-            onClick={handleLogout}            
+            onClick={handleLogout}
             userEmail={userEmail}
             loggedIn={loggedIn}
           />
