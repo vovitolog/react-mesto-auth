@@ -4,6 +4,7 @@
   background-color: transparent;
   padding: 0;
   border: none;
+  cursor: pointer;
 }
 
 .header__button:hover{
