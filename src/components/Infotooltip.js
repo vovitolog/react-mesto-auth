@@ -16,7 +16,7 @@ function InfoTooltip({ onClose, isOpen, registrationStatus }) {
               className="popup__status-icon"
               src={registrationStatus ? registrationSuccess : registrationFail}
             />
-            <h2 className="popup__title">
+            <h2 className="popup__alert-text">
               {registrationStatus
                 ? "Вы успешно зарегистрировались!"
                 : "Что-то пошло не так! Попробуйте ещё раз."}
