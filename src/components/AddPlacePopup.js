@@ -23,7 +23,6 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
     <PopupWithForm
       name="card-add"
       title="Новое место"
-      children=""
       isOpen={isOpen}
       onClose={onClose}
       buttonText="Сохранить"

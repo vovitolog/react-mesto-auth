@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Switch, Route, useHistory } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -6,14 +7,13 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import api from "../utils/Api";
-import { Switch, Route, useHistory } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import InfoTooltip from "./Infotooltip";
-import * as auth from "../auth.js";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import api from "../utils/api";
+import * as auth from "../utils/auth";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -42,7 +42,7 @@ function App() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
       auth
-        .getContent(jwt)
+        .checkToken(jwt)
         .then((response) => {
           if (response) {
             setLoggedin(true);
@@ -55,26 +55,18 @@ function App() {
   }, []);
 
   useEffect(() => {
-    api
-      .getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    if (loggedIn) {
+      api
+        .renderFirstScreen()
+        .then(([initialCards, userData]) => {
+          setCards(initialCards);
+          setCurrentUser(userData);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [loggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -166,13 +158,13 @@ function App() {
   function handleLogin({ email, password }) {
     auth
       .authorize(email, password)
-      .then((data) => {       
+      .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
           setLoggedin(true);
           setUserEmail(email);
           history.push("/");
-        }       
+        }
       })
       .catch((error) => console.log(error));
   }
